@@ -6,21 +6,48 @@ import {
   StatusBar,
   TextInput,
   Dimensions,
-  Platform
+  Platform,
+  ScrollView
 } from "react-native";
+import ToDo from "./ToDo";
 
 const { height, width } = Dimensions.get("window");
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <Text style={styles.title}>Today TO DO List</Text>
-      <View style={styles.card}>
-        <TextInput style={styles.input} placeholder={"new to do"} />
+export default class App extends React.Component {
+  state = {
+    newToDo: ""
+  };
+  render() {
+    // state에서 newToDo 저장 -> to do를 작성하는 곳이다
+    const { newToDo } = this.state;
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <Text style={styles.title}>Today TO DO List</Text>
+        <View style={styles.card}>
+          <TextInput
+            style={styles.input}
+            placeholder={"New to do"}
+            value={newToDo}
+            onChangeText={this._controlNewToDo}
+            placeholderTextColor={"#999"}
+            returnKeyType={"done"}
+            autoCorrect={false}
+          />
+          {/* _controlNewToDo를 통해 작성된 list들이 ScrollView안에 들어가게 된다 */}
+          <ScrollView>
+            <ToDo />
+          </ScrollView>
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
+  // 입력한 값들을 바로 state에 저장시켜준다!
+  _controlNewToDo = text => {
+    this.setState({
+      newToDo: text
+    });
+  };
 }
 
 const styles = StyleSheet.create({
@@ -56,5 +83,11 @@ const styles = StyleSheet.create({
         elevation: 3
       }
     })
+  },
+  input: {
+    padding: 20,
+    borderBottomColor: "#bbb",
+    borderBottomWidth: 1,
+    fontSize: 25
   }
 });
