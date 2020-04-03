@@ -8,20 +8,35 @@ import {
   Image,
   TextInput
 } from "react-native";
+import PropTypes from "prop-types";
 
 const { width, height } = Dimensions.get("window");
 
 export default class ToDo extends React.Component {
-  state = {
-    isEditing: false,
-    // to-do 항목을 다 했는가
-    isCompleted: false,
-    // 편집하는 내용을 저장해준다
-    toDoValue: ""
+  constructor(props) {
+    super(props);
+    this.state = {
+      isEditing: false,
+      // to-do 항목을 다 했는가
+      isCompleted: false,
+      // 편집하는 내용을 저장해준다
+      toDoValue: props.text
+    };
+  }
+
+  static propTypes = {
+    text: PropTypes.string.isRequired,
+    isCompleted: PropTypes.bool.isRequired,
+    deleteToDo: PropTypes.func.isRequired,
+    id: PropTypes.number.isRequired,
+    uncompleteToDo: PropTypes.func.isRequired,
+    completeToDo: PropTypes.func.isRequired,
+    updateToDo: PropTypes.func.isRequired
   };
+
   render() {
-    const { isEditing, isCompleted, toDoValue } = this.state;
-    const { text } = this.props;
+    const { isEditing, toDoValue } = this.state;
+    const { text, id, deleteToDo, isCompleted } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.column}>
@@ -37,14 +52,15 @@ export default class ToDo extends React.Component {
           {isEditing ? (
             <TextInput
               style={[
-                styles.input,
                 styles.text,
+                styles.input,
                 isCompleted ? styles.completedText : styles.uncompletedText
               ]}
               value={toDoValue}
               multiline={true}
               onChangeText={this._controlInput}
               returnKeyType={"done"}
+              // 편집하다가 칸 밖을 클릭하면 편집 종료
               onBlur={this._finishEditing}
             />
           ) : (
@@ -83,7 +99,7 @@ export default class ToDo extends React.Component {
                 {/* </View> */}
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPressOut={() => deleteToDo(id)}>
               <View style={styles.actionContainer}>
                 {/* <View style={styles.actionText}> */}
                 <Image
@@ -99,25 +115,25 @@ export default class ToDo extends React.Component {
     );
   }
   _toggleComplete = () => {
-    this.setState(prevState => {
-      return {
-        isCompleted: !prevState.isCompleted
-      };
-    });
+    const { isCompleted, uncompleteToDo, completeToDo, id } = this.props;
+    if (isCompleted) {
+      uncompleteToDo(id);
+    } else {
+      completeToDo(id);
+    }
   };
   // 편집 모드 /  수정 안 할 때 모드 -> push the pencil
   _startEditing = () => {
-    const { text } = this.props;
     this.setState({
-      isEditing: true,
-      toDoValue: text
+      isEditing: true
     });
   };
   // 편집을 다 끝내고 체크표시 누르려고 할 때
   _finishEditing = () => {
-    this.setState({
-      isEditing: false
-    });
+    const { toDoValue } = this.state;
+    const { id, updateToDo } = this.props;
+    updateToDo(id, toDoValue);
+    this.setState({ isEditing: false });
   };
   _controlInput = text => {
     this.setState({ toDoValue: text });
@@ -176,6 +192,7 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   input: {
+    paddingBottom: 5,
     marginVertical: 15,
     width: width / 2
   }
