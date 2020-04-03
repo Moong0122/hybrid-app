@@ -7,7 +7,8 @@ import {
   TextInput,
   Dimensions,
   Platform,
-  ScrollView
+  ScrollView,
+  Image
 } from "react-native";
 import ToDo from "./ToDo";
 
@@ -23,7 +24,11 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <Text style={styles.title}>Today TO DO List</Text>
+        <View style={styles.title_container}>
+          <Image style={styles.title_img} source={require("./img/title.png")} />
+          <Text style={styles.title}>Today</Text>
+          <Image style={styles.title_img} source={require("./img/title.png")} />
+        </View>
         <View style={styles.card}>
           <TextInput
             style={styles.input}
@@ -35,8 +40,8 @@ export default class App extends React.Component {
             autoCorrect={false}
           />
           {/* _controlNewToDo를 통해 작성된 list들이 ScrollView안에 들어가게 된다 */}
-          <ScrollView>
-            <ToDo />
+          <ScrollView contentContainerStyle={styles.toDos}>
+            <ToDo text={"hihihi"} />
           </ScrollView>
         </View>
       </View>
@@ -51,17 +56,27 @@ export default class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  // 그림과 today 문구 정렬 재정비 필요
+  title_img: {
+    marginTop: 50,
+    marginLeft: 10,
+    marginRight: 10
+  },
+  title_container: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
   container: {
     flex: 1,
-    backgroundColor: "#F23657",
+    backgroundColor: "#92C4F2",
     alignItems: "center"
   },
   title: {
     color: "white",
     fontSize: 30,
-    marginTop: 50,
-    fontWeight: "200",
-    marginBottom: 30
+    marginTop: 60,
+    fontWeight: "400",
+    marginBottom: 20
   },
   card: {
     backgroundColor: "white",
@@ -72,7 +87,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: "rgb(50,50,50)",
-        shadowOpacity: 0.5,
+        shadowOpacity: 0.2,
         shadowRadius: 10,
         shadowOffset: {
           height: -1,
@@ -89,5 +104,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "#bbb",
     borderBottomWidth: 1,
     fontSize: 25
+  },
+  toDos: {
+    alignItems: "center"
   }
 });
