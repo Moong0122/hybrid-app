@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import { AppLoading } from "expo";
 import ToDo from "./ToDo";
-// import { v1 as uuidv1 } from "uuid";
 
 const { height, width } = Dimensions.get("window");
 
@@ -208,7 +207,7 @@ export default class App extends React.Component {
   };
   _changeGreen = () => {
     this.setState({
-      color: "#aed581"
+      color: "#c5e1a5"
     });
   };
   _changePurple = () => {

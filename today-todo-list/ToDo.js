@@ -78,7 +78,7 @@ export default class ToDo extends React.Component {
             </Text>
           )}
         </TouchableOpacity>
-        {/* 연필 부분과 엑스 자 부분들 포함하고 있다 */}
+        {/* 연필 부분과 엑스자 부분들 포함하고 있다 */}
         {isEditing ? (
           // 지금 수정 중이라면 체크표시 설정해주고
           <View style={styles.actions}>
@@ -95,13 +95,11 @@ export default class ToDo extends React.Component {
           <View style={styles.actions}>
             <TouchableOpacity onPressOut={this._startEditing}>
               <View style={styles.actionContainer}>
-                {/* <View style={styles.actionText}> */}
                 <Image
                   style={styles.actionText}
                   source={require("./img/pencil_32.png")}
                   style={{ width: 20, height: 20 }}
                 />
-                {/* </View> */}
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -111,13 +109,11 @@ export default class ToDo extends React.Component {
               }}
             >
               <View style={styles.actionContainer}>
-                {/* <View style={styles.actionText}> */}
                 <Image
                   style={styles.actionText}
                   source={require("./img/delete_32.png")}
                   style={{ width: 20, height: 20 }}
                 />
-                {/* </View> */}
               </View>
             </TouchableOpacity>
           </View>
@@ -152,7 +148,8 @@ export default class ToDo extends React.Component {
   _controlInput = text => {
     this.setState({ toDoValue: text });
   };
-  _changeColor = () => {
+  _changeColor = event => {
+    event.stopPropagation();
     const { newColor, id, updateToDo } = this.props;
     const { toDoValue } = this.state;
     this.setState({ color: newColor });
