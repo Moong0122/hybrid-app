@@ -62,6 +62,7 @@ export default class ToDo extends React.Component {
               returnKeyType={"done"}
               // 편집하다가 칸 밖을 클릭하면 편집 종료
               onBlur={this._finishEditing}
+              underlineColorAndroid={"transparent"}
             />
           ) : (
             <Text
@@ -99,7 +100,12 @@ export default class ToDo extends React.Component {
                 {/* </View> */}
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPressOut={() => deleteToDo(id)}>
+            <TouchableOpacity
+              onPressOut={event => {
+                event.stopPropagation;
+                deleteToDo(id);
+              }}
+            >
               <View style={styles.actionContainer}>
                 {/* <View style={styles.actionText}> */}
                 <Image
@@ -114,7 +120,8 @@ export default class ToDo extends React.Component {
       </View>
     );
   }
-  _toggleComplete = () => {
+  _toggleComplete = event => {
+    event.stopPropagation();
     const { isCompleted, uncompleteToDo, completeToDo, id } = this.props;
     if (isCompleted) {
       uncompleteToDo(id);
@@ -123,13 +130,15 @@ export default class ToDo extends React.Component {
     }
   };
   // 편집 모드 /  수정 안 할 때 모드 -> push the pencil
-  _startEditing = () => {
+  _startEditing = event => {
+    event.stopPropagation();
     this.setState({
       isEditing: true
     });
   };
   // 편집을 다 끝내고 체크표시 누르려고 할 때
-  _finishEditing = () => {
+  _finishEditing = event => {
+    event.stopPropagation();
     const { toDoValue } = this.state;
     const { id, updateToDo } = this.props;
     updateToDo(id, toDoValue);

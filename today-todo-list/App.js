@@ -15,11 +15,6 @@ import { AppLoading } from "expo";
 import ToDo from "./ToDo";
 // import { v1 as uuidv1 } from "uuid";
 
-// 확인이 필요하다 uuid를 받는 부분은 다시 수정이 필요!!!!!
-export const serve = async event => {
-  const value = uuidv1();
-  return value;
-};
 const { height, width } = Dimensions.get("window");
 
 export default class App extends React.Component {
@@ -56,20 +51,23 @@ export default class App extends React.Component {
             returnKeyType={"done"}
             autoCorrect={false}
             onSubmitEditing={this._addToDo}
+            underlineColorAndroid={"transparent"}
           />
           {/* _controlNewToDo를 통해 작성된 list들이 ScrollView안에 들어가게 된다 */}
           <ScrollView contentContainerStyle={styles.toDos}>
-            {Object.values(toDos).map(toDo => (
-              // send ToDo -> _deleteToDo function
-              <ToDo
-                key={toDo.id}
-                deleteToDo={this._deleteToDo}
-                uncompleteToDo={this._uncompleteToDo}
-                completeToDo={this._completeToDo}
-                updateToDo={this._updateToDo}
-                {...toDo}
-              />
-            ))}
+            {Object.values(toDos)
+              .sort((a, b) => a.createdAt - b.createdAt)
+              .map(toDo => (
+                // send ToDo -> _deleteToDo function
+                <ToDo
+                  key={toDo.id}
+                  deleteToDo={this._deleteToDo}
+                  uncompleteToDo={this._uncompleteToDo}
+                  completeToDo={this._completeToDo}
+                  updateToDo={this._updateToDo}
+                  {...toDo}
+                />
+              ))}
           </ScrollView>
         </View>
       </View>
@@ -81,10 +79,15 @@ export default class App extends React.Component {
       newToDo: text
     });
   };
-  _loadToDos = () => {
-    this.setState({
-      loadedToDos: true
-    });
+  _loadToDos = async () => {
+    try {
+      const toDos = await AsyncStorage.getItem("toDos");
+      const parsedToDos = JSON.parse(toDos);
+      console.log(toDos);
+      this.setState({ loadedToDos: true, toDos: parsedToDos || {} });
+    } catch (err) {
+      console.log(err);
+    }
   };
   _addToDo = () => {
     const { newToDo } = this.state;
