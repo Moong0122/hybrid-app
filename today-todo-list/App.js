@@ -44,7 +44,7 @@ export default class App extends React.Component {
         <View style={styles.card}>
           <TextInput
             style={styles.input}
-            placeholder={"New to do"}
+            placeholder={"Things to do"}
             value={newToDo}
             onChangeText={this._controlNewToDo}
             placeholderTextColor={"#999"}
@@ -209,13 +209,16 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "white",
     flex: 1,
-    width: width - 25,
+    width: width - 20,
+    marginBottom: 80,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
     ...Platform.select({
       ios: {
         shadowColor: "rgb(50,50,50)",
-        shadowOpacity: -1,
+        shadowOpacity: 0.3,
         shadowRadius: 10,
         shadowOffset: {
           height: -1,

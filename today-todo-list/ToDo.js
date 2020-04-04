@@ -68,7 +68,8 @@ export default class ToDo extends React.Component {
             <Text
               style={[
                 styles.text,
-                isCompleted ? styles.completedText : styles.uncompletedText
+                isCompleted ? styles.completedText : styles.uncompletedText,
+                styles.highlight
               ]}
             >
               {text}
@@ -96,6 +97,7 @@ export default class ToDo extends React.Component {
                 <Image
                   style={styles.actionText}
                   source={require("./img/pencil_32.png")}
+                  style={{ width: 20, height: 20 }}
                 />
                 {/* </View> */}
               </View>
@@ -111,6 +113,7 @@ export default class ToDo extends React.Component {
                 <Image
                   style={styles.actionText}
                   source={require("./img/delete_32.png")}
+                  style={{ width: 20, height: 20 }}
                 />
                 {/* </View> */}
               </View>
@@ -204,5 +207,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     marginVertical: 15,
     width: width / 2
-  }
+  },
+  highlight: {}
 });
