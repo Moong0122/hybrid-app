@@ -16,6 +16,7 @@ export default class ToDo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      color: props.highlightColor,
       isEditing: false,
       // to-do 항목을 다 했는가
       isCompleted: false,
@@ -31,15 +32,16 @@ export default class ToDo extends React.Component {
     id: PropTypes.number.isRequired,
     uncompleteToDo: PropTypes.func.isRequired,
     completeToDo: PropTypes.func.isRequired,
-    updateToDo: PropTypes.func.isRequired
+    updateToDo: PropTypes.func.isRequired,
+    newColor: PropTypes.string.isRequired
   };
 
   render() {
-    const { isEditing, toDoValue } = this.state;
+    const { isEditing, toDoValue, color } = this.state;
     const { text, id, deleteToDo, isCompleted } = this.props;
     return (
       <View style={styles.container}>
-        <View style={styles.column}>
+        <TouchableOpacity onPress={this._changeColor} style={styles.column}>
           <TouchableOpacity onPress={this._toggleComplete}>
             <View
               style={[
@@ -69,13 +71,13 @@ export default class ToDo extends React.Component {
               style={[
                 styles.text,
                 isCompleted ? styles.completedText : styles.uncompletedText,
-                styles.highlight
+                { backgroundColor: color }
               ]}
             >
               {text}
             </Text>
           )}
-        </View>
+        </TouchableOpacity>
         {/* 연필 부분과 엑스 자 부분들 포함하고 있다 */}
         {isEditing ? (
           // 지금 수정 중이라면 체크표시 설정해주고
@@ -142,13 +144,19 @@ export default class ToDo extends React.Component {
   // 편집을 다 끝내고 체크표시 누르려고 할 때
   _finishEditing = event => {
     event.stopPropagation();
-    const { toDoValue } = this.state;
     const { id, updateToDo } = this.props;
-    updateToDo(id, toDoValue);
+    const { toDoValue, color } = this.state;
     this.setState({ isEditing: false });
+    updateToDo(id, toDoValue, color);
   };
   _controlInput = text => {
     this.setState({ toDoValue: text });
+  };
+  _changeColor = () => {
+    const { newColor, id, updateToDo } = this.props;
+    const { toDoValue } = this.state;
+    this.setState({ color: newColor });
+    updateToDo(id, toDoValue, newColor);
   };
 }
 const styles = StyleSheet.create({
@@ -207,6 +215,5 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     marginVertical: 15,
     width: width / 2
-  },
-  highlight: {}
+  }
 });

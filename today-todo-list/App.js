@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
   Image,
+  TouchableOpacity,
   AsyncStorage
 } from "react-native";
 import { AppLoading } from "expo";
@@ -19,6 +20,7 @@ const { height, width } = Dimensions.get("window");
 
 export default class App extends React.Component {
   state = {
+    color: "transparent",
     newToDo: "",
     loadedToDos: false,
     toDos: {}
@@ -27,7 +29,7 @@ export default class App extends React.Component {
     this._loadToDos();
   };
   render() {
-    const { newToDo, loadedToDos, toDos } = this.state;
+    const { newToDo, loadedToDos, toDos, color } = this.state;
     // console.log(toDos);
     // to do가 로딩이 안 되어 있다면
     if (!loadedToDos) {
@@ -65,10 +67,25 @@ export default class App extends React.Component {
                   uncompleteToDo={this._uncompleteToDo}
                   completeToDo={this._completeToDo}
                   updateToDo={this._updateToDo}
+                  newColor={color}
                   {...toDo}
                 />
               ))}
           </ScrollView>
+        </View>
+        <View style={styles.highlight_content}>
+          <TouchableOpacity onPressOut={this._changeYellow}>
+            <View style={[styles.yellow, styles.yes]} />
+          </TouchableOpacity>
+          <TouchableOpacity onPressOut={this._changeGreen}>
+            <View style={[styles.green, styles.yes]} />
+          </TouchableOpacity>
+          <TouchableOpacity onPressOut={this._changePurple}>
+            <View style={[styles.purple, styles.yes]} />
+          </TouchableOpacity>
+          <TouchableOpacity onPressOut={this._changeWhite}>
+            <View style={[styles.white, styles.yes]} />
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -80,10 +97,11 @@ export default class App extends React.Component {
     });
   };
   _loadToDos = async () => {
+    // AsyncStorage.clear();
     try {
       const toDos = await AsyncStorage.getItem("toDos");
       const parsedToDos = JSON.parse(toDos);
-      console.log(toDos);
+      // console.log(toDos);
       this.setState({ loadedToDos: true, toDos: parsedToDos || {} });
     } catch (err) {
       console.log(err);
@@ -103,7 +121,8 @@ export default class App extends React.Component {
             id: ID,
             isCompleted: false,
             text: newToDo,
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            highlightColor: "transparent"
           }
         };
         const newState = {
@@ -162,7 +181,7 @@ export default class App extends React.Component {
       return { ...newState };
     });
   };
-  _updateToDo = (id, text) => {
+  _updateToDo = (id, text, color) => {
     this.setState(prevState => {
       const newState = {
         ...prevState,
@@ -170,7 +189,8 @@ export default class App extends React.Component {
           ...prevState.toDos,
           [id]: {
             ...prevState.toDos[id],
-            text: text
+            text: text,
+            highlightColor: color
           }
         }
       };
@@ -180,6 +200,26 @@ export default class App extends React.Component {
   };
   _saveToDos = newToDos => {
     const saveToDos = AsyncStorage.setItem("toDos", JSON.stringify(newToDos));
+  };
+  _changeYellow = () => {
+    this.setState({
+      color: "#ffee58"
+    });
+  };
+  _changeGreen = () => {
+    this.setState({
+      color: "#aed581"
+    });
+  };
+  _changePurple = () => {
+    this.setState({
+      color: "#e1bee7"
+    });
+  };
+  _changeWhite = () => {
+    this.setState({
+      color: "transparent"
+    });
   };
 }
 
@@ -210,11 +250,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flex: 1,
     width: width - 20,
-    marginBottom: 80,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    marginBottom: 30,
+    borderRadius: 10,
     ...Platform.select({
       ios: {
         shadowColor: "rgb(50,50,50)",
@@ -238,5 +275,35 @@ const styles = StyleSheet.create({
   },
   toDos: {
     alignItems: "center"
+  },
+  yes: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 20,
+    borderWidth: 2
+  },
+  yellow: {
+    borderColor: "#FFEB3B",
+    backgroundColor: "#ffee58"
+  },
+  green: {
+    borderColor: "#9ccc65",
+    backgroundColor: "#aed581"
+  },
+  purple: {
+    borderColor: "#b39ddb",
+    backgroundColor: "#ce93d8"
+  },
+  white: {
+    borderColor: "#e0e0e0",
+    backgroundColor: "white"
+  },
+  highlight_content: {
+    flexDirection: "row",
+    padding: 0,
+    marginBottom: 20
   }
 });
