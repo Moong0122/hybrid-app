@@ -2,6 +2,8 @@
   "expo": {
     "name": "today-todo-list",
     "slug": "today-todo-list",
+    "privacy": "public",
+    "sdkVersion": "36.0.0",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,6 +19,10 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "android": {
+      "package": "co.jacob.todayToDoList"
+    },
+    "description": ""
   }
 }
