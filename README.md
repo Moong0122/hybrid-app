@@ -9,6 +9,7 @@ https://facebook.github.io/react-native/
 * macOS Catalina
 * Visual Studio Code
 * Simulator
+* genymotion
 
 ## My result!
 https://play.google.com/store/apps/details?id=co.jacob.todayToDoList
